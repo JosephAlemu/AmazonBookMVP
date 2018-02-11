@@ -41,4 +41,12 @@ public class Book {
         this.author = author;
     }
 
+    @Override
+    public String toString() {
+        return "Book{" +
+                "title='" + title + '\'' +
+                ", imageURL='" + imageURL + '\'' +
+                ", author='" + author + '\'' +
+                '}';
+    }
 }

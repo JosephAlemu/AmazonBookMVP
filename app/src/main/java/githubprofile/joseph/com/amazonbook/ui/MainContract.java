@@ -22,8 +22,6 @@ public interface MainContract {
      */
     interface  Listener {
 
-
-
     }
 
 

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.BitmapEncoder;
+import com.bumptech.glide.request.RequestOptions;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -21,6 +28,9 @@ import java.util.List;
 
 import githubprofile.joseph.com.amazonbook.R;
 import githubprofile.joseph.com.amazonbook.model.Book;
+
+import static android.content.ContentValues.TAG;
+import static com.bumptech.glide.load.DecodeFormat.PREFER_ARGB_8888;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BooksViewHolder> {
 
@@ -84,23 +94,19 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BooksViewHolde
 
     @Override
     public void onBindViewHolder(BooksViewHolder holder, final int position) {
+
+        Log.d(TAG, "onBindViewHolder: " + books.get(position).toString());
         holder.tvTitle.setText(books.get(position).getTitle());
         holder.tvAuther.setText(books.get(position).getAuthor());
 
+        ImageView imageView = ((BooksViewHolder) holder).ivBook;
+        String currentUrl = books.get(position).getImageURL();
 
-        ImageDownloader task = new ImageDownloader();
 
-        try {
-            myImage = task.execute(books.get(position).getImageURL()).get();
+        Glide.with(context)
+                .load(currentUrl)
+                .into(imageView);
 
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-        }
-        holder.ivBook.setImageBitmap(myImage);
-        holder.ivBook.getLayoutParams().height=220;
-        holder.ivBook.getLayoutParams().width=220;
     }
 
     @Override
@@ -108,33 +114,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BooksViewHolde
         return books.size();
     }
 
-
-
-    public class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-
-            try {
-
-                URL url = new URL(urls[0]);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                InputStream inputStream = connection.getInputStream();
-                Bitmap myBitmap = BitmapFactory.decodeStream(inputStream);
-                return myBitmap;
-
-            } catch (MalformedURLException e) {
-
-                e.printStackTrace();
-
-            } catch (IOException e) {
-
-                e.printStackTrace();
-
-            }
-            return null;
-        }
-    }
 
 }
 

@@ -1,4 +1,4 @@
-package githubprofile.joseph.com.amazonbook.utility;
+package githubprofile.joseph.com.amazonbook.ui;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,24 +30,22 @@ import retrofit.Response;
 
 public class Presenter {
 
-    List<Book> myDataSource =  new ArrayList<>(); ;
+    List<Book> myDataSource = new ArrayList<>();
     MainContract.View view;
 
-    public Presenter(MainContract.View view)
-    {
+    public Presenter(MainContract.View view) {
         this.view = view;
 
     }
 
-    public List<Book> loadBooks(){
-
+    public List<Book> loadBooks() {
 
 
         final AmzBookEndPoint apiService = ApiClient.getClient().create(AmzBookEndPoint.class);
 
         Call<List<Book>> call = apiService.getBook();
 
-           call.enqueue(new Callback<List<Book>>() {
+        call.enqueue(new Callback<List<Book>>() {
             @Override
             public void onResponse(Response<List<Book>> response, Retrofit retrofit) {
 
@@ -59,14 +57,13 @@ public class Presenter {
             @Override
             public void onFailure(Throwable t) {
 
+                view.failed("Error: " + t);
             }
         });
 
 
-     return myDataSource;
+        return myDataSource;
     }
-
-
 
 
 }
